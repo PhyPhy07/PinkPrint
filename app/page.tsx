@@ -2,6 +2,30 @@
 
 import { useState } from 'react';
 
+const COMMONLY_FORGOTTEN_ITEMS: Record<string, string[]> = {
+  painting: [
+    'Paint Can Opener',
+    'Stir Sticks',
+    'Sandpaper & spackle for patching (if needed)',
+    'Tray Liners (if needed)',
+    'Optional: Floetrol for latex paint (to help leveling & brush stroke prevention)',
+  ],
+  flooring: [
+    'Underlayment',
+    'Transition strips & trim',
+    'Adhesive or underlayment (for LVP/tile)',
+    'Expansion gap spacers',
+    'Measuring tape & level',
+  ],
+  fence: [
+    'Post hole digger or auger',
+    'Concrete for post footings',
+    'Gate hardware & hinges',
+    'Post caps & brackets',
+    'Screws & fasteners',
+  ],
+};
+
 function formatLabel(key: string): string {
   const labels: Record<string, string> = {
     roomSize: 'Room size',
@@ -104,7 +128,28 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen w-full max-w-[100vw] overflow-x-hidden sm:p-6 sm:pt-[7%] lg:p-8">
+    <div className="relative min-h-screen w-full max-w-[100vw] overflow-x-hidden sm:p-6 sm:pt-[7%] lg:p-8">
+      {/* Post-it note: pops up after user gets their estimate */}
+      {result && result.clarifyingQuestions.length === 0 && (() => {
+        const projectType = result.estimate.projectType?.toLowerCase() || 'painting';
+        const items = COMMONLY_FORGOTTEN_ITEMS[projectType] ?? COMMONLY_FORGOTTEN_ITEMS.painting;
+        return (
+          <aside
+            className="fixed left-1/2 top-[30%] z-10 w-64 -translate-x-1/2 -rotate-2 transform rounded-sm border border-amber-200 bg-amber-50 p-4 shadow-lg"
+            style={{ boxShadow: '4px 4px 12px rgba(0,0,0,0.15)' }}
+          >
+            <h3 className="mb-2 font-bold text-amber-900">Don&apos;t forget!</h3>
+            <ul className="space-y-1 text-sm text-amber-950">
+              {items.map((item, i) => (
+                <li key={i} className="flex items-start gap-1.5">
+                  <span className="mt-0.5 text-amber-600">•</span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </aside>
+        );
+      })()}
       {/* Mobile: small image banner at top */}
       <div className="relative mt-[12%] h-40 w-full overflow-hidden md:hidden">
         <img
@@ -147,7 +192,7 @@ export default function Home() {
         </form>
 
         {error && (
-          <div className="mt-6 rounded-lg border border-red-200 bg-red-50 p-4 text-maroon dark:border-red-800 dark:bg-red-950/30">
+          <div className="mt-6 rounded-lg border border-red-200 bg-red-50 p-4 text-maroon">
             {error}
           </div>
         )}
@@ -155,7 +200,7 @@ export default function Home() {
         {result && (
           <div className="mt-6 space-y-6">
             {result.clarifyingQuestions.length > 0 && (
-              <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 sm:p-6 dark:border-amber-800 dark:bg-amber-950/30">
+              <div className="rounded-lg border border-amber-200 bg-ivory p-4 sm:p-6">
                 <h2 className="mb-3 text-sm font-bold text-maroon">
                   Clarifying questions
                 </h2>
@@ -192,13 +237,13 @@ export default function Home() {
             )}
             {result.clarifyingQuestions.length === 0 && (
               <>
-            <div className="rounded-lg border border-zinc-200 bg-white p-4 sm:p-6 dark:border-zinc-700 dark:bg-zinc-900">
+            <div className="rounded-lg border border-zinc-200 bg-white p-4 sm:p-6">
               <h2 className="mb-4 text-sm font-bold text-maroon">
                 Your project
               </h2>
               <div className="space-y-4 text-maroon">
                 <div className="flex items-center gap-2">
-                  <span className="rounded-full bg-blue-100 px-3 py-1 text-sm font-bold text-maroon dark:bg-blue-900/50">
+                  <span className="rounded-full bg-blue-100 px-3 py-1 text-sm font-bold text-maroon">
                     {result.estimate.projectType}
                   </span>
                 </div>
@@ -214,19 +259,19 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-4 sm:p-6 dark:border-emerald-800 dark:bg-emerald-950/30">
-              <h2 className="mb-4 text-sm font-bold text-maroon">
+            <div className="rounded-lg border border-rose-300 bg-rose-100 p-4 sm:p-6">
+              <h2 className="mb-4 text-sm font-bold text-rose-900">
                 Cost estimate
               </h2>
-              <div className="space-y-2 text-maroon">
-                <p className="break-words text-xl font-extrabold sm:text-2xl">
+              <div className="space-y-2 text-rose-950">
+                <p className="break-words text-xl font-extrabold text-rose-950 sm:text-2xl">
                   ${result.estimate.costLow.toLocaleString()} – ${result.estimate.costHigh.toLocaleString()}
                 </p>
-                <p className="text-sm text-maroon">
+                <p className="text-sm text-rose-900">
                   Mid-range: ~${result.estimate.costMid.toLocaleString()}
                 </p>
                 {result.estimate.areaSqFt != null && result.estimate.projectType !== 'fence' && (
-                  <p className="text-sm text-maroon">
+                  <p className="text-sm text-rose-900">
                     {result.estimate.areaSqFt} sq ft
                     {result.estimate.projectType === 'painting' && result.estimate.quantity != null && (
                       <> · {result.estimate.quantity} gallons paint</>
@@ -234,23 +279,23 @@ export default function Home() {
                   </p>
                 )}
                 {result.estimate.quantity != null && result.estimate.projectType === 'fence' && (
-                  <p className="text-sm text-maroon">
+                  <p className="text-sm text-rose-900">
                     {result.estimate.quantity} linear ft
                   </p>
                 )}
               </div>
               {result.estimate.materials && result.estimate.materials.length > 0 && (
-                <div className="mt-4 border-t border-emerald-200 pt-4 dark:border-emerald-700">
-                  <h3 className="mb-2 text-xs font-bold uppercase tracking-wide text-maroon">
+                <div className="mt-4 border-t border-rose-300 pt-4">
+                  <h3 className="mb-2 text-xs font-bold uppercase tracking-wide text-rose-900">
                     Materials breakdown
                   </h3>
-                  <ul className="space-y-1.5 text-sm">
+                  <ul className="space-y-1.5 text-sm text-rose-950">
                     {result.estimate.materials.map((m, i) => (
                       <li key={i} className="flex min-w-0 flex-col gap-0.5 break-words sm:flex-row sm:justify-between sm:items-center sm:gap-4">
                         <span className="min-w-0">
                           {m.name} ({m.quantity} {m.unit})
                         </span>
-                        <span className="min-w-0 shrink-0 text-maroon">
+                        <span className="min-w-0 shrink-0 font-semibold text-rose-950">
                           ${m.costLow.toLocaleString()} – ${m.costHigh.toLocaleString()}
                         </span>
                       </li>
