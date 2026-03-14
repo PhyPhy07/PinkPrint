@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { estimateProject } from '@/app/lib/estimators';
 import { cachedGenerateObject } from '@/app/lib/cache-ai';
 import { projectExtractionSchema } from '@/app/lib/schemas';
-import { KNOWN_CLARIFYING_QUESTIONS } from '@/app/lib/known-clarifying-questions';
+import { getFilteredKnownQuestions } from '@/app/lib/known-clarifying-questions';
 
 export async function POST(request: Request) {
   try {
@@ -36,7 +36,7 @@ If the user includes "[Answers to clarifying questions]:" in their message, use 
     // Merge known questions only on first request; after user answers, use AI's questions only (so cost can appear)
     const projectType = String(extracted.projectType);
     const isRefine = input.includes('[Answers to clarifying questions]');
-    const knownQuestions = !isRefine ? (KNOWN_CLARIFYING_QUESTIONS[projectType] ?? []) : [];
+    const knownQuestions = !isRefine ? getFilteredKnownQuestions(projectType, input) : [];
     const aiQuestions = Array.isArray(extracted.clarifyingQuestions) ? extracted.clarifyingQuestions : [];
     const mergedQuestions = [...knownQuestions, ...aiQuestions];
     const extractedWithMerged = { ...extracted, clarifyingQuestions: mergedQuestions };

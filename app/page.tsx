@@ -54,9 +54,9 @@ function formatLabel(key: string): string {
 
 function Detail({ label, value }: { label: string; value: string }) {
   return (
-    <div>
+    <div className="py-0.5">
       <dt className="text-xs text-maroon">{label}</dt>
-      <dd className="font-bold">{value}</dd>
+      <dd className="text-sm font-bold">{value}</dd>
     </div>
   );
 }
@@ -129,18 +129,54 @@ export default function Home() {
 
   return (
     <div className="relative min-h-screen w-full max-w-[100vw] overflow-x-hidden sm:p-6 sm:pt-[7%] lg:p-8">
-      {/* Post-it note: pops up after user gets their estimate */}
+      {/* Speech bubble: shows at the beginning, before user gets estimate */}
+      {(!result || result.clarifyingQuestions.length > 0) && (
+        <div
+          className="fixed left-[30%] top-[30%] z-10 max-w-[220px]"
+        >
+          <div
+            className="relative rounded-2xl border-2 border-maroon bg-white px-4 py-3 shadow-md"
+            style={{ borderColor: 'var(--color-maroon)' }}
+          >
+            <p className="text-base font-bold text-maroon sm:text-lg">
+              On Wednesdays: We Build in Pink! Let&apos;s get to planning and budgeting your next project together.
+            </p>
+            {/* Bubble tail pointing left towards the builder babe */}
+            <div
+              className="absolute -left-3 top-1/2 h-0 w-0 -translate-y-1/2 border-y-8 border-r-[12px] border-l-0 border-transparent border-r-maroon"
+              style={{ borderRightColor: 'var(--color-maroon)' }}
+            />
+            <div
+              className="absolute -left-2.5 top-1/2 h-0 w-0 -translate-y-1/2 border-y-[7px] border-r-[10px] border-l-0 border-transparent border-r-white"
+              style={{ borderRightColor: 'white' }}
+            />
+          </div>
+        </div>
+      )}
+      {/* Sticky note: pops up only after user gets their estimate */}
       {result && result.clarifyingQuestions.length === 0 && (() => {
-        const projectType = result.estimate.projectType?.toLowerCase() || 'painting';
-        const items = COMMONLY_FORGOTTEN_ITEMS[projectType] ?? COMMONLY_FORGOTTEN_ITEMS.painting;
+        const isDoorProject = /\bdoor(s)?\b/i.test(input);
+        if (isDoorProject) {
+          return (
+            <aside
+              className="fixed left-1/2 top-[30%] z-10 w-72 -translate-x-1/2 -rotate-2 transform rounded-sm border border-amber-200 bg-amber-50 p-4 shadow-lg"
+              style={{ boxShadow: '4px 4px 12px rgba(0,0,0,0.15)' }}
+            >
+              <h3 className="mb-2 text-lg font-bold text-amber-900">Pro tip</h3>
+              <p className="text-base leading-relaxed text-amber-950">
+                To determine paint type, try rubbing a cotton ball with isopropyl (rubbing) alcohol on the door. If the paint softens or comes off, it&apos;s water-based; if nothing happens, it&apos;s likely oil-based.
+              </p>
+            </aside>
+          );
+        }
         return (
           <aside
             className="fixed left-1/2 top-[30%] z-10 w-64 -translate-x-1/2 -rotate-2 transform rounded-sm border border-amber-200 bg-amber-50 p-4 shadow-lg"
             style={{ boxShadow: '4px 4px 12px rgba(0,0,0,0.15)' }}
           >
-            <h3 className="mb-2 font-bold text-amber-900">Don&apos;t forget!</h3>
-            <ul className="space-y-1 text-sm text-amber-950">
-              {items.map((item, i) => (
+            <h3 className="mb-2 text-lg font-bold text-amber-900">Don&apos;t forget!</h3>
+            <ul className="space-y-1 text-base text-amber-950">
+              {(COMMONLY_FORGOTTEN_ITEMS[result.estimate.projectType?.toLowerCase() || 'painting'] ?? COMMONLY_FORGOTTEN_ITEMS.painting).map((item, i) => (
                 <li key={i} className="flex items-start gap-1.5">
                   <span className="mt-0.5 text-amber-600">•</span>
                   <span>{item}</span>
@@ -158,25 +194,16 @@ export default function Home() {
           className="h-full w-full object-cover object-center"
         />
       </div>
-      <main className="w-full min-w-0 max-w-2xl px-4 pb-8 pt-6 sm:mx-0 sm:ml-auto sm:mr-[10%] sm:px-0 sm:pt-0 mx-auto">
-        <p className="mb-8 break-words text-maroon">
-          Describe your project and get AI-assisted guidance.
-        </p>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
+      <main className="w-full min-w-0 max-w-2xl px-4 pb-4 pt-[8%] sm:mx-0 sm:ml-auto sm:mr-[10%] sm:px-0 sm:pt-[8%] mx-auto">
+        <form onSubmit={handleSubmit} className="space-y-3">
           <div>
-            <label
-              htmlFor="project"
-              className="mb-2 block break-words text-base sm:text-lg font-bold text-maroon"
-            >
-             The Project Path: What are we building babe? 
-            </label>
+        
             <textarea
               id="project"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="e.g. I want to paint a 12x14 bedroom with 8-foot ceilings"
-              rows={4}
+              placeholder="What are we building babe? e.g. I want to paint a 12x14 bedroom with 8-foot ceilings"
+              rows={3}
               className="w-full min-w-0 rounded-lg border border-zinc-300 bg-ivory px-4 py-3 text-zinc-900 placeholder-zinc-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               disabled={loading}
             />
@@ -192,24 +219,24 @@ export default function Home() {
         </form>
 
         {error && (
-          <div className="mt-6 rounded-lg border border-red-200 bg-red-50 p-4 text-maroon">
+          <div className="mt-3 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-maroon">
             {error}
           </div>
         )}
 
         {result && (
-          <div className="mt-6 space-y-6">
+          <div className="mt-4 space-y-3">
             {result.clarifyingQuestions.length > 0 && (
-              <div className="rounded-lg border border-amber-200 bg-ivory p-4 sm:p-6">
-                <h2 className="mb-3 text-sm font-bold text-maroon">
+              <div className="rounded-lg border border-amber-200 bg-ivory p-3 sm:p-4">
+                <h2 className="mb-2 text-sm font-bold text-maroon">
                   Clarifying questions
                 </h2>
-                <ul className="list-inside list-disc space-y-2 break-words text-maroon">
+                <ul className="list-inside list-disc space-y-1 break-words text-sm text-maroon">
                   {result.clarifyingQuestions.map((q, i) => (
                     <li key={i}>{q}</li>
                   ))}
                 </ul>
-                <form onSubmit={handleRefine} className="mt-4 space-y-3">
+                <form onSubmit={handleRefine} className="mt-3 space-y-2">
                   <label
                     htmlFor="clarifying-answers"
                     className="block text-sm font-bold text-maroon"
@@ -221,7 +248,7 @@ export default function Home() {
                     value={clarifyingAnswers}
                     onChange={(e) => setClarifyingAnswers(e.target.value)}
                     placeholder="e.g. Interior, kitchen, existing paint that's dark..."
-                    rows={3}
+                    rows={2}
                     className="w-full min-w-0 rounded-lg border border-amber-300 bg-ivory px-4 py-3 text-zinc-900 placeholder-zinc-500 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
                     disabled={loading}
                   />
@@ -237,17 +264,17 @@ export default function Home() {
             )}
             {result.clarifyingQuestions.length === 0 && (
               <>
-            <div className="rounded-lg border border-zinc-200 bg-white p-4 sm:p-6">
-              <h2 className="mb-4 text-sm font-bold text-maroon">
+            <div className="rounded-lg border border-zinc-200 bg-white p-3 sm:p-4">
+              <h2 className="mb-2 text-sm font-bold text-maroon">
                 Your project
               </h2>
-              <div className="space-y-4 text-maroon">
+              <div className="space-y-2 text-maroon">
                 <div className="flex items-center gap-2">
-                  <span className="rounded-full bg-blue-100 px-3 py-1 text-sm font-bold text-maroon">
+                  <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-bold text-maroon">
                     {result.estimate.projectType}
                   </span>
                 </div>
-                <dl className="grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2">
+                <dl className="grid min-w-0 grid-cols-1 gap-2 text-sm sm:grid-cols-2">
                   {Object.entries(result.estimate.details).map(([key, value]) => (
                     <Detail
                       key={key}
@@ -259,12 +286,12 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="rounded-lg border border-rose-300 bg-rose-100 p-4 sm:p-6">
-              <h2 className="mb-4 text-sm font-bold text-rose-900">
+            <div className="rounded-lg border border-rose-300 bg-rose-100 p-3 sm:p-4">
+              <h2 className="mb-2 text-sm font-bold text-rose-900">
                 Cost estimate
               </h2>
-              <div className="space-y-2 text-rose-950">
-                <p className="break-words text-xl font-extrabold text-rose-950 sm:text-2xl">
+              <div className="space-y-0.5 text-rose-950">
+                <p className="break-words text-lg font-extrabold text-rose-950 sm:text-xl">
                   ${result.estimate.costLow.toLocaleString()} – ${result.estimate.costHigh.toLocaleString()}
                 </p>
                 <p className="text-sm text-rose-900">
@@ -285,11 +312,11 @@ export default function Home() {
                 )}
               </div>
               {result.estimate.materials && result.estimate.materials.length > 0 && (
-                <div className="mt-4 border-t border-rose-300 pt-4">
-                  <h3 className="mb-2 text-xs font-bold uppercase tracking-wide text-rose-900">
+                <div className="mt-2 border-t border-rose-300 pt-2">
+                  <h3 className="mb-1 text-xs font-bold uppercase tracking-wide text-rose-900">
                     Materials breakdown
                   </h3>
-                  <ul className="space-y-1.5 text-sm text-rose-950">
+                  <ul className="space-y-0.5 text-xs text-rose-950 sm:text-sm">
                     {result.estimate.materials.map((m, i) => (
                       <li key={i} className="flex min-w-0 flex-col gap-0.5 break-words sm:flex-row sm:justify-between sm:items-center sm:gap-4">
                         <span className="min-w-0">
