@@ -11,6 +11,7 @@ function formatLabel(key: string): string {
     paintGallonsNeeded: 'Paint gallons',
     ceilingHeightFt: 'Ceiling height',
     paintCeiling: 'Paint ceiling',
+    paintMoldingOrTrim: 'Paint molding/trim',
     flooringType: 'Flooring type',
     areaSqFt: 'Area',
     costPerSqFtLow: 'Cost/sq ft (low)',
@@ -30,8 +31,8 @@ function formatLabel(key: string): string {
 function Detail({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <dt className="text-xs text-zinc-500 dark:text-zinc-400">{label}</dt>
-      <dd className="font-medium">{value}</dd>
+      <dt className="text-xs text-maroon">{label}</dt>
+      <dd className="font-bold">{value}</dd>
     </div>
   );
 }
@@ -48,25 +49,31 @@ export default function Home() {
       costMid: number;
       costHigh: number;
       details: Record<string, string | number>;
+      materials?: { name: string; quantity: number; unit: string; costLow: number; costMid: number; costHigh: number }[];
     };
     clarifyingQuestions: string[];
   } | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [clarifyingAnswers, setClarifyingAnswers] = useState('');
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent, augmentedInput?: string) {
     e.preventDefault();
-    if (!input.trim()) return;
+    const textToSend = augmentedInput ?? input.trim();
+    if (!textToSend) return;
 
     setLoading(true);
     setError(null);
-    setResult(null);
+    if (!augmentedInput) {
+      setResult(null);
+      setClarifyingAnswers('');
+    }
 
     try {
       const res = await fetch('/api/ai', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ input: input.trim() }),
+        body: JSON.stringify({ input: textToSend }),
       });
 
       const data = await res.json();
@@ -90,13 +97,24 @@ export default function Home() {
     }
   }
 
+  async function handleRefine(e: React.FormEvent) {
+    e.preventDefault();
+    const combined = `${input.trim()}\n\n[Answers to clarifying questions]: ${clarifyingAnswers.trim()}`;
+    await handleSubmit(e, combined);
+  }
+
   return (
-    <div className="min-h-screen bg-zinc-50 p-8 dark:bg-zinc-950">
-      <main className="mx-auto max-w-2xl">
-        <h1 className="mb-2 text-2xl font-semibold text-zinc-900 dark:text-zinc-100">
-          DIY Cost Estimator
-        </h1>
-        <p className="mb-8 text-zinc-600 dark:text-zinc-400">
+    <div className="min-h-screen w-full max-w-[100vw] overflow-x-hidden sm:p-6 sm:pt-[7%] lg:p-8">
+      {/* Mobile: small image banner at top */}
+      <div className="relative mt-[12%] h-40 w-full overflow-hidden md:hidden">
+        <img
+          src="/pinkprint.png"
+          alt=""
+          className="h-full w-full object-cover object-center"
+        />
+      </div>
+      <main className="w-full min-w-0 max-w-2xl px-4 pb-8 pt-6 sm:mx-0 sm:ml-auto sm:mr-[10%] sm:px-0 sm:pt-0 mx-auto">
+        <p className="mb-8 break-words text-maroon">
           Describe your project and get AI-assisted guidance.
         </p>
 
@@ -104,9 +122,9 @@ export default function Home() {
           <div>
             <label
               htmlFor="project"
-              className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+              className="mb-2 block break-words text-base sm:text-lg font-bold text-maroon"
             >
-              Project description
+             The Project Path: What are we building babe? 
             </label>
             <textarea
               id="project"
@@ -114,7 +132,7 @@ export default function Home() {
               onChange={(e) => setInput(e.target.value)}
               placeholder="e.g. I want to paint a 12x14 bedroom with 8-foot ceilings"
               rows={4}
-              className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-zinc-900 placeholder-zinc-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100 dark:placeholder-zinc-500"
+              className="w-full min-w-0 rounded-lg border border-zinc-300 bg-ivory px-4 py-3 text-zinc-900 placeholder-zinc-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               disabled={loading}
             />
           </div>
@@ -122,14 +140,14 @@ export default function Home() {
           <button
             type="submit"
             disabled={loading}
-            className="rounded-lg bg-blue-600 px-6 py-2.5 font-medium text-white transition-colors hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full sm:w-auto rounded-lg bg-pink-500 px-6 py-2.5 font-bold text-ivory transition-colors hover:bg-pink-600 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? 'Thinking...' : 'Get response'}
           </button>
         </form>
 
         {error && (
-          <div className="mt-6 rounded-lg border border-red-200 bg-red-50 p-4 text-red-700 dark:border-red-800 dark:bg-red-950/30 dark:text-red-400">
+          <div className="mt-6 rounded-lg border border-red-200 bg-red-50 p-4 text-maroon dark:border-red-800 dark:bg-red-950/30">
             {error}
           </div>
         )}
@@ -137,28 +155,54 @@ export default function Home() {
         {result && (
           <div className="mt-6 space-y-6">
             {result.clarifyingQuestions.length > 0 && (
-              <div className="rounded-lg border border-amber-200 bg-amber-50 p-6 dark:border-amber-800 dark:bg-amber-950/30">
-                <h2 className="mb-3 text-sm font-medium text-amber-800 dark:text-amber-200">
+              <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 sm:p-6 dark:border-amber-800 dark:bg-amber-950/30">
+                <h2 className="mb-3 text-sm font-bold text-maroon">
                   Clarifying questions
                 </h2>
-                <ul className="list-inside list-disc space-y-2 text-amber-900 dark:text-amber-100">
+                <ul className="list-inside list-disc space-y-2 break-words text-maroon">
                   {result.clarifyingQuestions.map((q, i) => (
                     <li key={i}>{q}</li>
                   ))}
                 </ul>
+                <form onSubmit={handleRefine} className="mt-4 space-y-3">
+                  <label
+                    htmlFor="clarifying-answers"
+                    className="block text-sm font-bold text-maroon"
+                  >
+                    Your answers (required to see cost estimate)
+                  </label>
+                  <textarea
+                    id="clarifying-answers"
+                    value={clarifyingAnswers}
+                    onChange={(e) => setClarifyingAnswers(e.target.value)}
+                    placeholder="e.g. Interior, kitchen, existing paint that's dark..."
+                    rows={3}
+                    className="w-full min-w-0 rounded-lg border border-amber-300 bg-ivory px-4 py-3 text-zinc-900 placeholder-zinc-500 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                    disabled={loading}
+                  />
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full sm:w-auto rounded-lg bg-pink-500 px-4 py-2 text-sm font-bold text-ivory transition-colors hover:bg-pink-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {loading ? 'Refining...' : 'Refine estimate'}
+                  </button>
+                </form>
               </div>
             )}
-            <div className="rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-700 dark:bg-zinc-900">
-              <h2 className="mb-4 text-sm font-medium text-zinc-500 dark:text-zinc-400">
+            {result.clarifyingQuestions.length === 0 && (
+              <>
+            <div className="rounded-lg border border-zinc-200 bg-white p-4 sm:p-6 dark:border-zinc-700 dark:bg-zinc-900">
+              <h2 className="mb-4 text-sm font-bold text-maroon">
                 Your project
               </h2>
-              <div className="space-y-4 text-zinc-900 dark:text-zinc-100">
+              <div className="space-y-4 text-maroon">
                 <div className="flex items-center gap-2">
-                  <span className="rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800 dark:bg-blue-900/50 dark:text-blue-200">
+                  <span className="rounded-full bg-blue-100 px-3 py-1 text-sm font-bold text-maroon dark:bg-blue-900/50">
                     {result.estimate.projectType}
                   </span>
                 </div>
-                <dl className="grid gap-3 sm:grid-cols-2">
+                <dl className="grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2">
                   {Object.entries(result.estimate.details).map(([key, value]) => (
                     <Detail
                       key={key}
@@ -170,19 +214,19 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-6 dark:border-emerald-800 dark:bg-emerald-950/30">
-              <h2 className="mb-4 text-sm font-medium text-emerald-800 dark:text-emerald-200">
+            <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-4 sm:p-6 dark:border-emerald-800 dark:bg-emerald-950/30">
+              <h2 className="mb-4 text-sm font-bold text-maroon">
                 Cost estimate
               </h2>
-              <div className="space-y-2 text-emerald-900 dark:text-emerald-100">
-                <p className="text-2xl font-semibold">
+              <div className="space-y-2 text-maroon">
+                <p className="break-words text-xl font-extrabold sm:text-2xl">
                   ${result.estimate.costLow.toLocaleString()} – ${result.estimate.costHigh.toLocaleString()}
                 </p>
-                <p className="text-sm text-emerald-700 dark:text-emerald-300">
+                <p className="text-sm text-maroon">
                   Mid-range: ~${result.estimate.costMid.toLocaleString()}
                 </p>
                 {result.estimate.areaSqFt != null && result.estimate.projectType !== 'fence' && (
-                  <p className="text-sm text-emerald-700 dark:text-emerald-300">
+                  <p className="text-sm text-maroon">
                     {result.estimate.areaSqFt} sq ft
                     {result.estimate.projectType === 'painting' && result.estimate.quantity != null && (
                       <> · {result.estimate.quantity} gallons paint</>
@@ -190,15 +234,37 @@ export default function Home() {
                   </p>
                 )}
                 {result.estimate.quantity != null && result.estimate.projectType === 'fence' && (
-                  <p className="text-sm text-emerald-700 dark:text-emerald-300">
+                  <p className="text-sm text-maroon">
                     {result.estimate.quantity} linear ft
                   </p>
                 )}
               </div>
+              {result.estimate.materials && result.estimate.materials.length > 0 && (
+                <div className="mt-4 border-t border-emerald-200 pt-4 dark:border-emerald-700">
+                  <h3 className="mb-2 text-xs font-bold uppercase tracking-wide text-maroon">
+                    Materials breakdown
+                  </h3>
+                  <ul className="space-y-1.5 text-sm">
+                    {result.estimate.materials.map((m, i) => (
+                      <li key={i} className="flex min-w-0 flex-col gap-0.5 break-words sm:flex-row sm:justify-between sm:items-center sm:gap-4">
+                        <span className="min-w-0">
+                          {m.name} ({m.quantity} {m.unit})
+                        </span>
+                        <span className="min-w-0 shrink-0 text-maroon">
+                          ${m.costLow.toLocaleString()} – ${m.costHigh.toLocaleString()}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
+              </>
+            )}
           </div>
         )}
       </main>
     </div>
   );
 }
+

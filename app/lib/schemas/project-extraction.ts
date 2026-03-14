@@ -11,6 +11,7 @@ const paintVariant = z.object({
   roomWidthFt: z.number().positive().default(12).describe('Room width in feet (use 12 if unknown)'),
   ceilingHeightFt: z.number().positive().default(8).describe('Ceiling height in feet'),
   paintCeiling: z.boolean().default(false).describe('Whether to paint the ceiling'),
+  paintMoldingOrTrim: z.boolean().default(false).describe('Whether to paint molding, baseboards, or quarter round (semi-gloss)'),
   wallCount: z.number().positive().default(4),
   wallHeightFt: z.number().positive().default(8),
   wallAreaSqFt: z.number().positive().default(0),
