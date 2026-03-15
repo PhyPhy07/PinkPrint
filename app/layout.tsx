@@ -21,6 +21,9 @@ const caveat = Caveat({
 export const metadata: Metadata = {
   title: "Pink Print : A DIY Project Cost Calculator",
   description: "A DIY project cost calculator for painting, flooring, and fence projects",
+  icons: {
+    icon: "/logo.png",
+  },
 };
 
 export const viewport: Viewport = {
