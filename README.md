@@ -105,7 +105,7 @@ Open [http://localhost:3000](http://localhost:3000)
 
 ## Future Scalability
 
-Upon future iterations of this application, I would consider implementing:
+Future enhancements to this application to be considered in upcoming versions:
 
 ### Caching & Performance
 
