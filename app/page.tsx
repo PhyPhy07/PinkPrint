@@ -131,8 +131,10 @@ export default function Home() {
     <div className="relative min-h-screen w-full max-w-[100vw] overflow-x-hidden sm:p-6 sm:pt-[7%] lg:p-8">
       {/* Speech bubble: shows at the beginning, before user gets estimate */}
       {(!result || result.clarifyingQuestions.length > 0) && (
+        <>
+        {/* Desktop: fixed position */}
         <div
-          className="fixed left-[30%] top-[30%] z-10 max-w-[220px]"
+          className="hidden sm:block fixed left-[30%] top-[30%] z-10 max-w-[220px]"
         >
           <div
             className="relative rounded-2xl border-2 border-maroon bg-white px-4 py-3 shadow-md"
@@ -152,14 +154,15 @@ export default function Home() {
             />
           </div>
         </div>
+        </>
       )}
-      {/* Sticky note: pops up only after user gets their estimate */}
+      {/* Sticky note: pops up only after user gets their estimate - desktop: fixed overlay */}
       {result && result.clarifyingQuestions.length === 0 && (() => {
         const isDoorProject = /\bdoor(s)?\b/i.test(input);
         if (isDoorProject) {
           return (
             <aside
-              className="fixed left-1/2 top-[30%] z-10 w-72 -translate-x-1/2 -rotate-2 transform rounded-sm border border-amber-200 bg-amber-50 p-4 shadow-lg"
+              className="hidden sm:block fixed left-1/2 top-[30%] z-10 w-72 -translate-x-1/2 -rotate-2 transform rounded-sm border border-amber-200 bg-amber-50 p-4 shadow-lg"
               style={{ boxShadow: '4px 4px 12px rgba(0,0,0,0.15)' }}
             >
               <h3 className="mb-2 text-lg font-bold text-amber-900">Pro tip</h3>
@@ -171,7 +174,7 @@ export default function Home() {
         }
         return (
           <aside
-            className="fixed left-1/2 top-[30%] z-10 w-64 -translate-x-1/2 -rotate-2 transform rounded-sm border border-amber-200 bg-amber-50 p-4 shadow-lg"
+            className="hidden sm:block fixed left-1/2 top-[30%] z-10 w-64 -translate-x-1/2 -rotate-2 transform rounded-sm border border-amber-200 bg-amber-50 p-4 shadow-lg"
             style={{ boxShadow: '4px 4px 12px rgba(0,0,0,0.15)' }}
           >
             <h3 className="mb-2 text-lg font-bold text-amber-900">Don&apos;t forget!</h3>
@@ -329,6 +332,30 @@ export default function Home() {
                     ))}
                   </ul>
                 </div>
+              )}
+            </div>
+
+            {/* Mobile: sticky note in flow after cost estimate */}
+            <div className="sm:hidden mt-3 -rotate-2 transform rounded-sm border border-amber-200 bg-amber-50 p-4 shadow-lg" style={{ boxShadow: '4px 4px 12px rgba(0,0,0,0.15)' }}>
+              {/\bdoor(s)?\b/i.test(input) ? (
+                <>
+                  <h3 className="mb-2 text-lg font-bold text-amber-900">Pro tip</h3>
+                  <p className="text-base leading-relaxed text-amber-950">
+                    To determine paint type, try rubbing a cotton ball with isopropyl (rubbing) alcohol on the door. If the paint softens or comes off, it&apos;s water-based; if nothing happens, it&apos;s likely oil-based.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <h3 className="mb-2 text-lg font-bold text-amber-900">Don&apos;t forget!</h3>
+                  <ul className="space-y-1 text-base text-amber-950">
+                    {(COMMONLY_FORGOTTEN_ITEMS[result.estimate.projectType?.toLowerCase() || 'painting'] ?? COMMONLY_FORGOTTEN_ITEMS.painting).map((item, i) => (
+                      <li key={i} className="flex items-start gap-1.5">
+                        <span className="mt-0.5 text-amber-600">•</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </>
               )}
             </div>
               </>
