@@ -14,43 +14,7 @@ On Wednesdays, We Build in Pink.
 
 ### Data Flow & Architecture
 
-flowchart TD
-    %% Nodes styling
-    style U fill:#FFDDC1,stroke:#E07A5F,stroke-width:2px
-    style P1 fill:#FFE5B4,stroke:#F2A65A,stroke-width:2px
-    style API fill:#C1E1FF,stroke:#2A6F9E,stroke-width:2px
-    style CACHE fill:#D3F8E2,stroke:#38A3A5,stroke-width:2px
-    style CACHED fill:#A3E4DB,stroke:#138D75,stroke-width:2px
-    style GEMINI fill:#F1C0E8,stroke:#9B59B6,stroke-width:2px
-    style SAVE fill:#D0BFFF,stroke:#6A0DAD,stroke-width:2px
-    style EST fill:#FFF3B0,stroke:#FFD93D,stroke-width:2px
-    style MERGE fill:#FFB5A7,stroke:#FF6B6B,stroke-width:2px
-    style RES fill:#B8F2E6,stroke:#06D6A0,stroke-width:2px
-    style P2 fill:#FFDAC1,stroke:#FF6F61,stroke-width:2px
-
-    %% Flow
-    U[USER] --> P1[PAGE<br/>POST { input }]
-    P1 --> API[API ROUTE]
-
-    API --> CACHE[SUPABASE Cache<br/>getCachedResponse(hash)]
-    CACHE -->|HIT| CACHED[Use Cached<br/>Extracted Data]
-    CACHE -->|MISS| GEMINI[GEMINI<br/>generateObject]
-
-    GEMINI --> SAVE[SUPABASE<br/>setCachedResponse]
-    SAVE --> EST[ESTIMATOR<br/>estimateProject() – deterministic]
-
-    CACHED --> EST
-
-    EST --> MERGE[MERGE Questions<br/>getFilteredKnownQuestions]
-    MERGE --> RES[RESPONSE<br/>{ extracted, estimate }]
-    RES --> P2[PAGE<br/>Render Questions OR Estimate]
-
-- System diagram (user → API → cache → AI → estimator → UI)
-- Sequence diagrams (initial load, refine request)
-- Cache key flow
-- Question merging logic
-- Component hierarchy
-- File map
+![Pink Print Data Flow](/PinkPrintDataflow.png)
 
 **Summary:** User describes their project in plain language → `cachedGenerateObject()` checks Supabase cache → on miss, Gemini extracts structured project data (type, dimensions, options) → `getFilteredKnownQuestions()` merges experienced clarifying questions with AI questions → user answers → refine request re-extracts with answers → `estimateProject()` runs deterministic math (area, quantities, materials, costs) → UI displays estimate + materials breakdown + "Don't forget!" checklist.
 
