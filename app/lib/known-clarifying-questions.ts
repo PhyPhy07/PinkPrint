@@ -32,7 +32,6 @@ export const KNOWN_CLARIFYING_QUESTIONS: Record<string, string[]> = {
   fence: [
     'Are there irregular shapes, slopes, or obstacles (trees, rocks, pools)?',
     'Are there gates, corners, or access points to account for?',
-    'What type of fence is desired (wood, vinyl, chain link, aluminum, wrought iron, composite)?',
     'Should posts, rails, and panels included in the estimate, or only panels?',
     'Do you want to include finishes, stains, or paints in the cost?',
   ],
