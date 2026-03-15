@@ -14,7 +14,7 @@ On Wednesdays, We Build in Pink.
 
 ### Data Flow & Architecture
 
-![Pink Print Data Flow](/PinkPrintDataflow.png)
+![Pink Print Data Flow](./public/PinkPrintDataflow.png)
 
 **Summary:** User describes their project in plain language → `cachedGenerateObject()` checks Supabase cache → on miss, Gemini extracts structured project data (type, dimensions, options) → `getFilteredKnownQuestions()` merges experienced clarifying questions with AI questions → user answers → refine request re-extracts with answers → `estimateProject()` runs deterministic math (area, quantities, materials, costs) → UI displays estimate + materials breakdown + "Don't forget!" checklist.
 
