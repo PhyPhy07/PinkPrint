@@ -20,10 +20,8 @@ On Wednesdays, We Build in Pink.
 
 ### Extraction & Estimation
 
-1. **AI extraction** — Gemini parses user input into a Zod-validated schema: `projectType`, dimensions (`roomLengthFt`, `roomWidthFt`, `ceilingHeightFt`, etc.), and `clarifyingQuestions` when info is missing.
-2. **Clarifying questions** — Known questions (interior/exterior, drywall vs existing paint, molding/trim) are filtered by context (e.g. skip "interior or exterior?" when user says "bedroom"). Door projects get door-specific questions (metal/wood, primed, oil-based).
-3. **Refine flow** — User answers are appended as `[Answers to clarifying questions]: ...` and sent back; AI fills gaps and omits questions for answered info.
-4. **Deterministic estimates** — No AI for numbers. `estimateProject()` computes area, paint gallons, flooring sq ft, fence linear ft, and applies cost ranges (low/mid/high) per project type.
+- **Extraction** — Gemini parses input into a Zod schema (projectType, dimensions, clarifyingQuestions). Known questions are filtered by context; user answers trigger a refine pass that fills gaps.
+- **Estimation** — Deterministic, no AI for numbers. `estimateProject()` computes area, quantities, and cost ranges (low/mid/high) from the extracted data.
 
 ### Project Types
 
