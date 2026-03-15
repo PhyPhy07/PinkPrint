@@ -43,7 +43,8 @@ If the user includes "[Answers to clarifying questions]:" in their message, use 
 
     return NextResponse.json({ extracted: extractedWithMerged, estimate });
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ error: 'AI request failed' }, { status: 500 });
+    const message = error instanceof Error ? error.message : 'AI request failed';
+    console.error('[api/ai]', error);
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
