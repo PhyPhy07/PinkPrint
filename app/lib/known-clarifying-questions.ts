@@ -22,6 +22,20 @@ export const KNOWN_CLARIFYING_QUESTIONS: Record<string, string[]> = {
     'If existing paint: Is the current color dark?(if so, we\'ll add a primer for the new paint to cover it.)',
     'Will you be painting any molding, baseboards, or quarter round? (We\'ll add a semi-gloss paint for trim.)',
   ],
+  flooring: [
+    'Are there stairs, landings, or elevated areas to include?',
+    'Are there alcoves, closets, or cutouts that complicate installation?',
+    'What type of subfloor exists (concrete, plywood, existing tile, etc.)?',
+    'Will there be any prep work required (removal of old flooring, leveling, moisture mitigation)?',
+    'Will sealer be needed?',
+  ],
+  fence: [
+    'Are there irregular shapes, slopes, or obstacles (trees, rocks, pools)?',
+    'Are there gates, corners, or access points to account for?',
+    'What type of fence is desired (wood, vinyl, chain link, aluminum, wrought iron, composite)?',
+    'Should posts, rails, and panels included in the estimate, or only panels?',
+    'Do you want to include finishes, stains, or paints in the cost?',
+  ],
 };
 
 /** Returns known questions filtered by user input (e.g. skip inside/outside when user said "bedroom", use door questions when painting a door) */
