@@ -16,7 +16,7 @@ On Wednesdays, We Build in Pink.
 
 ![Pink Print Data Flow](./public/dataflow.png)
 
-**Summary:** User describes their project in plain language → `cachedGenerateObject()` checks Supabase cache → on miss, Gemini extracts structured project data (type, dimensions, options) → `getFilteredKnownQuestions()` merges experienced clarifying questions with AI questions → user answers → refine request re-extracts with answers → `estimateProject()` runs deterministic math (area, quantities, materials, costs) → UI displays estimate + materials breakdown + "Don't forget!" checklist.
+**Summary:** User submits project input → API route checks Supabase cache → **HIT:** use cached data | **MISS:** Gemini generates data, save to Supabase → Estimator runs `estimateProject()`, merge known + AI questions → Response (extracted data, estimate) → Page renders questions or final estimate.
 
 ### Extraction & Estimation
 
