@@ -1,13 +1,9 @@
 import { generateObject, generateText } from 'ai';
 import { google } from '@ai-sdk/google';
-import { groq } from '@ai-sdk/groq';
 import { z } from 'zod';
 import { getCachedResponse, setCachedResponse, type CacheType } from './ai-cache';
 
-// Use Groq (free tier) if GROQ_API_KEY is set; otherwise Google
-const aiModel = process.env.GROQ_API_KEY
-  ? groq('llama-3.3-70b-versatile')
-  : google('gemini-2.5-flash-lite');
+const aiModel = google('gemini-2.5-flash-lite');
 
 export async function cachedGenerateObject<T extends z.ZodType>(
   input: string,

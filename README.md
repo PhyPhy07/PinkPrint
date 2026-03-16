@@ -83,7 +83,7 @@ Open [http://localhost:3000](http://localhost:3000)
 | Layer        | Tech                          |
 | ------------ | ------------------------------ |
 | Framework    | Next.js 16 (App Router)         |
-| AI           | Vercel AI SDK + Gemini (or Groq) |
+| AI           | Vercel AI SDK + Gemini           |
 | Caching      | Supabase                       |
 | Validation   | Zod                            |
 | Styling      | Tailwind CSS                   |
