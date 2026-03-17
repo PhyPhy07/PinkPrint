@@ -19,7 +19,7 @@ export const KNOWN_CLARIFYING_QUESTIONS: Record<string, string[]> = {
     'If exterior: Are you painting siding or brick?',
     'If interior: Is the room a children\'s room, kitchen, or bathroom? (These typically need a higher sheen for cleanability.)',
     'Are you painting fresh drywall or over existing paint? (We\'ll need to add a primer for fresh drywall.)',
-    'If existing paint: Is the current color dark?(if so, we\'ll need toadd a primer for the new paint to cover it.)',
+    'If existing paint: Is the current color dark?(if so, we\'ll need to add a primer for the new paint to cover it.)',
     'Will you be painting any molding, baseboards, or quarter round? (We\'ll need to add a semi-gloss paint for trim/molding/baseboards.)',
   ],
   flooring: [
