@@ -134,7 +134,7 @@ export default function Home() {
         <>
         {/* Desktop: fixed position */}
         <div
-          className="hidden sm:block fixed left-[30%] top-[30%] z-10 max-w-[220px]"
+          className="hidden sm:block fixed left-[30%] top-[22%] z-10 max-w-[220px]"
         >
           <div
             className="relative rounded-2xl border-2 border-maroon bg-white px-4 py-3 shadow-md"
@@ -197,7 +197,7 @@ export default function Home() {
           className="h-full w-full object-cover object-center"
         />
       </div>
-      <main className="w-full min-w-0 max-w-2xl px-4 pb-4 pt-[8%] sm:mx-0 sm:ml-auto sm:mr-[10%] sm:px-0 sm:pt-[8%] mx-auto">
+      <main className="w-full min-w-0 max-w-2xl px-4 pb-4 pt-[8%] sm:mx-0 sm:ml-auto sm:mr-[5%] sm:px-0 sm:pt-[8%] mx-auto">
         <form onSubmit={handleSubmit} className="space-y-3">
           <div>
         
@@ -206,8 +206,8 @@ export default function Home() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="What are we building babe? e.g. I want to paint a 12x14 bedroom with 8-foot ceilings"
-              rows={3}
-              className="w-full min-w-0 rounded-lg border border-zinc-300 bg-ivory px-4 py-3 text-zinc-900 placeholder-zinc-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              rows={2}
+              className="w-full min-w-0 sm:max-w-md rounded-lg border border-zinc-300 bg-ivory px-4 py-2.5 text-zinc-900 placeholder-zinc-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               disabled={loading}
             />
           </div>

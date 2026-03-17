@@ -33,7 +33,7 @@ If the user includes "[Answers to clarifying questions]:" in their message, use 
 
     const estimate = estimateProject(extracted as Record<string, unknown>);
 
-    // Merge known questions only on first request; after user answers, use AI's questions only (so cost can appear)
+    // Merge known questions only on first request; after user answers, use AI's questions only (so cost estimates can appear)
     const projectType = String(extracted.projectType);
     const isRefine = input.includes('[Answers to clarifying questions]');
     const knownQuestions = !isRefine ? getFilteredKnownQuestions(projectType, input) : [];

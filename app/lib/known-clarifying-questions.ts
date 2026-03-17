@@ -3,7 +3,7 @@
  * These are merged with AI-generated questions when relevant.
  */
 
-const INTERIOR_ROOM_WORDS = /\b(bedroom|kitchen|bathroom|living room|den|office|closet|hallway|dining room|nursery|guest room|master bedroom|laundry room|basement|attic)\b/i;
+const INTERIOR_ROOM_WORDS = /\b(bedroom|kitchen|bathroom|living room|den|office|closet|hallway|dining room|nursery|guest room|master bedroom|laundry room|basement|attic|room)\b/i;
 const DOOR_WORDS = /\bdoor(s)?\b/i;
 
 export const PAINTING_DOOR_QUESTIONS: string[] = [
