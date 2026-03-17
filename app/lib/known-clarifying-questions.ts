@@ -18,9 +18,9 @@ export const KNOWN_CLARIFYING_QUESTIONS: Record<string, string[]> = {
     'Is this an interior or exterior painting project?',
     'If exterior: Are you painting siding or brick?',
     'If interior: Is the room a children\'s room, kitchen, or bathroom? (These typically need a higher sheen for cleanability.)',
-    'Are you painting fresh drywall or over existing paint? (We\'ll add a primer for fresh drywall.)',
-    'If existing paint: Is the current color dark?(if so, we\'ll add a primer for the new paint to cover it.)',
-    'Will you be painting any molding, baseboards, or quarter round? (We\'ll add a semi-gloss paint for trim.)',
+    'Are you painting fresh drywall or over existing paint? (We\'ll need to add a primer for fresh drywall.)',
+    'If existing paint: Is the current color dark?(if so, we\'ll need toadd a primer for the new paint to cover it.)',
+    'Will you be painting any molding, baseboards, or quarter round? (We\'ll need to add a semi-gloss paint for trim/molding/baseboards.)',
   ],
   flooring: [
     'Are there stairs, landings, or elevated areas to include?',
@@ -28,12 +28,15 @@ export const KNOWN_CLARIFYING_QUESTIONS: Record<string, string[]> = {
     'What type of subfloor exists (concrete, plywood, existing tile, etc.)?',
     'Will there be any prep work required (removal of old flooring, leveling, moisture mitigation)?',
     'Will sealer be needed?',
+    'Will you need to remove any previous tack strips or nails?',
   ],
   fence: [
     'Are there irregular shapes, slopes, or obstacles (trees, rocks, pools)?',
     'Are there gates, corners, or access points to account for?',
     'Should posts, rails, and panels included in the estimate, or only panels?',
     'Do you want to include finishes, stains, or paints in the cost?',
+    'Do you have any pets that need to be fenced in?',
+    'Do your pets ever chew on the fence?',
   ],
 };
 
