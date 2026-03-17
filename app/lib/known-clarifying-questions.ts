@@ -7,10 +7,13 @@ const INTERIOR_ROOM_WORDS = /\b(bedroom|kitchen|bathroom|living room|den|office|
 const DOOR_WORDS = /\bdoor(s)?\b/i;
 
 export const PAINTING_DOOR_QUESTIONS: string[] = [
+  'How many doors are you painting?',
   'Is the door inside or outside?',
   'Is the door metal or wood?',
+  'Is the door standard, French, paneled, or custom?',
   'Has it been primed or previously painted?',
   'If previously painted: Is the paint oil-based?',
+  'Will the door need to be sanded or stripped of existing paint?',
 ];
 
 export const KNOWN_CLARIFYING_QUESTIONS: Record<string, string[]> = {
@@ -29,6 +32,8 @@ export const KNOWN_CLARIFYING_QUESTIONS: Record<string, string[]> = {
     'Will there be any prep work required (removal of old flooring, leveling, moisture mitigation)?',
     'Will sealer be needed?',
     'Will you need to remove any previous tack strips or nails?',
+    'Will you need flooring transitions or thresholds?',
+    'Will you need underlayment or moisture barrier (You can guage this by running a moisture meter/test kit)?',
   ],
   fence: [
     'Are there irregular shapes, slopes, or obstacles (trees, rocks, pools)?',
@@ -37,6 +42,10 @@ export const KNOWN_CLARIFYING_QUESTIONS: Record<string, string[]> = {
     'Do you want to include finishes, stains, or paints in the cost?',
     'Do you have any pets that need to be fenced in?',
     'Do your pets ever chew on the fence?',
+    'What are the current soil conditions (rock, dirt, grass, etc.)?',
+    'Will the posts be set in concrete?',
+    'Is the area prone to flooding or heavy rains?',
+    'Did previous fence posts feel loose or shift over time?',
   ],
 };
 
