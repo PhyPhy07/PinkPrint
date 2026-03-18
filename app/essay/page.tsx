@@ -92,7 +92,7 @@ export default async function EssayPage() {
   });
 
   return (
-    <div className="min-h-screen w-full bg-black text-white">
+    <div className="min-h-screen w-full bg-black text-white" style={{ fontFamily: "Arial, sans-serif" }}>
       <main className="max-w-3xl mx-auto px-4 py-8 md:py-12">
         <Link
           href="/"
