@@ -135,7 +135,7 @@ export default function Home() {
           <h1 className="text-5xl md:text-6xl font-bold mb-8 tracking-tight" style={{ color: 'var(--text-light-pink)' }}>
             Pink Print
           </h1>
-          <div className="w-full h-72 md:h-[450px] flex items-center justify-center mb-5 overflow-hidden">
+          <div className="w-full h-72 md:h-[450px] flex items-center justify-center mb-2 overflow-hidden">
             <img
               src="/builderbabe.png"
               alt="Builder character"
@@ -147,18 +147,17 @@ export default function Home() {
             <br />
        Let's Plan For Your Next Paint, Flooring, or Fence Project!
           </p>
+          <Link
+            href="/essay"
+            className="text-lg md:text-xl font-semibold mt-10 hover:underline"
+            style={{ color: '#FF51A8' }}
+          >
+         Blog: How I Built Pink Print →
+          </Link>
         </aside>
 
         {/* Content */}
         <section className="p-6 md:p-10 overflow-y-auto flex flex-col">
-          <Link
-            href="/essay"
-            className="text-base font-medium mb-4 hover:underline"
-            style={{ color: 'var(--text-light-pink)' }}
-          >
-         Blog: How I Built Pink Print - From Sales Floor to Structured Output →
-          </Link>
-
           <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 mb-10">
             <input
               type="text"

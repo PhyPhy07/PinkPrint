@@ -18,6 +18,9 @@ html {
   --soft-pink-accent: #FEFEFA;
   --text-light: #FEFEFA;
   --text-muted: #FEFEFA;
+  --grid-line-rgb: 254, 254, 250;
+  --grid-line-alpha-horizontal: 0.3;
+  --grid-line-alpha-vertical: 0.22;
   --radius: 16px;
 }
 
@@ -51,8 +54,8 @@ body::before {
   height: 100%;
   background-color: var(--bg-black);
   background-image:
-    linear-gradient(rgba(255, 52, 113, 0.3) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 52, 113, 0.22) 1px, transparent 1px);
+    linear-gradient(rgba(var(--grid-line-rgb), var(--grid-line-alpha-horizontal)) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(var(--grid-line-rgb), var(--grid-line-alpha-vertical)) 1px, transparent 1px);
   background-size: 8px 10px, 10px 8px;
   background-position: center;
   z-index: -1;
