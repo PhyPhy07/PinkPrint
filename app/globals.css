@@ -11,13 +11,13 @@ html {
 }
 
 :root {
-  --bg-black: #050505;
-  --dusty-pink: #d8a0b0;
-  --card-pink: #ff3385;
-  --text-light-pink: #f0c8d4;
-  --soft-pink-accent: rgba(255, 255, 255, 0.05);
-  --text-light: #fdfdfd;
-  --text-muted: #aaaaaa;
+  --bg-black: #FF51A8;
+  --dusty-pink: #FFA7E3;
+  --card-pink: #FD8096;
+  --text-light-pink: #FF7112;
+  --soft-pink-accent: #FEFEFA;
+  --text-light: #FEFEFA;
+  --text-muted: #FEFEFA;
   --radius: 16px;
 }
 
@@ -51,8 +51,8 @@ body::before {
   height: 100%;
   background-color: var(--bg-black);
   background-image:
-    linear-gradient(rgba(216, 160, 176, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(216, 160, 176, 0.03) 1px, transparent 1px);
+    linear-gradient(rgba(255, 52, 113, 0.3) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 52, 113, 0.22) 1px, transparent 1px);
   background-size: 8px 10px, 10px 8px;
   background-position: center;
   z-index: -1;

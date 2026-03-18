@@ -127,12 +127,12 @@ export default function Home() {
       <main
         className="grid grid-cols-1 md:grid-cols-[350px_1fr] w-full max-w-[1100px] min-h-[85vh] md:min-h-[85vh] rounded-2xl overflow-hidden border border-white/5 shadow-2xl backdrop-blur-sm"
         style={{
-          background: 'rgba(10, 10, 10, 0.7)',
+          background: 'rgba(240, 249, 248, 0.88)',
         }}
       >
         {/* Sidebar */}
-        <aside className="flex flex-col items-center text-center p-8 md:p-10 border-b md:border-b-0 md:border-r border-white/5" style={{ backgroundColor: 'var(--soft-pink-accent)' }}>
-          <h1 className="text-4xl md:text-5xl font-bold mb-8 tracking-tight" style={{ color: 'var(--text-light-pink)' }}>
+        <aside className="flex flex-col items-center text-center p-8 md:p-10 border-b md:border-b-0 md:border-r border-white/60" style={{ backgroundColor: 'var(--soft-pink-accent)' }}>
+          <h1 className="text-5xl md:text-6xl font-bold mb-8 tracking-tight" style={{ color: 'var(--text-light-pink)' }}>
             Pink Print
           </h1>
           <div className="w-full h-72 md:h-[450px] flex items-center justify-center mb-5 overflow-hidden">
@@ -166,18 +166,18 @@ export default function Home() {
               onChange={(e) => setInput(e.target.value)}
               placeholder="What are we building? e.g. I want to paint a 12x14 bedroom with 8-foot ceilings"
               disabled={loading}
-              className="flex-1 min-w-0 px-5 py-4 rounded-xl text-lg border-2 transition-colors focus:outline-none focus:border-[var(--card-pink)] disabled:opacity-50"
+              className="flex-1 min-w-0 px-5 py-4 rounded-xl text-lg border-2 placeholder:text-[#6a8f8a] transition-colors focus:outline-none focus:border-[var(--card-pink)] disabled:opacity-50"
               style={{
-                backgroundColor: 'rgba(255, 255, 255, 0.02)',
-                borderColor: 'rgba(255, 255, 255, 0.08)',
-                color: 'var(--text-light-pink)',
+                backgroundColor: '#FEFEFA',
+                borderColor: 'rgba(129, 191, 183, 0.8)',
+                color: '#2f5f5a',
               }}
             />
             <button
               type="submit"
               disabled={loading}
               className="px-6 py-4 rounded-xl font-bold text-white transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
-              style={{ backgroundColor: 'var(--card-pink)' }}
+              style={{ backgroundColor: '#FF3471' }}
             >
               {loading ? 'Planning...' : 'Start Planning'}
             </button>
@@ -192,19 +192,19 @@ export default function Home() {
           {/* Clarifying questions */}
           {result && result.clarifyingQuestions.length > 0 && (
             <div
-              className="mb-6 p-6 rounded-2xl border"
-              style={{ backgroundColor: 'var(--soft-pink-accent)', borderColor: 'rgba(255, 255, 255, 0.05)' }}
+              className="mb-6 p-6 rounded-2xl border shadow-lg"
+              style={{ backgroundColor: 'rgba(255, 255, 255, 0.9)', borderColor: 'rgba(255, 255, 255, 0.9)' }}
             >
-              <h2 className="text-base font-bold uppercase tracking-wider mb-3" style={{ color: 'var(--text-light-pink)' }}>
+              <h2 className="text-xl font-bold uppercase tracking-wider mb-4" style={{ color: '#FF3471' }}>
                 Clarifying questions
               </h2>
-              <ul className="list-disc list-inside space-y-2 mb-4 text-base" style={{ color: 'var(--text-light-pink)' }}>
+              <ul className="list-disc list-outside pl-6 space-y-3 mb-5 text-lg leading-relaxed" style={{ color: '#2f5f5a' }}>
                 {result.clarifyingQuestions.map((q, i) => (
                   <li key={i}>{q}</li>
                 ))}
               </ul>
-              <form onSubmit={handleRefine} className="space-y-3">
-                <label htmlFor="clarifying-answers" className="block text-base font-bold" style={{ color: 'var(--text-light-pink)' }}>
+              <form onSubmit={handleRefine} className="space-y-4">
+                <label htmlFor="clarifying-answers" className="block text-lg font-bold" style={{ color: '#2f5f5a' }}>
                   Your answers (required to see cost estimate)
                 </label>
                 <textarea
@@ -212,20 +212,20 @@ export default function Home() {
                   value={clarifyingAnswers}
                   onChange={(e) => setClarifyingAnswers(e.target.value)}
                   placeholder="e.g. Interior, kitchen, existing paint that's dark..."
-                  rows={2}
+                  rows={4}
                   disabled={loading}
-                  className="w-full px-4 py-3 rounded-xl border-2 resize-none focus:outline-none focus:border-[var(--card-pink)] disabled:opacity-50"
+                  className="w-full px-4 py-3 rounded-xl border-2 resize-y placeholder:text-[#6a8f8a] focus:outline-none focus:border-[var(--card-pink)] disabled:opacity-50"
                   style={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.02)',
-                    borderColor: 'rgba(255, 255, 255, 0.08)',
-                    color: 'var(--text-light-pink)',
+                    backgroundColor: '#FEFEFA',
+                    borderColor: 'rgba(129, 191, 183, 0.8)',
+                    color: '#2f5f5a',
                   }}
                 />
                 <button
                   type="submit"
                   disabled={loading}
                   className="px-5 py-2.5 rounded-xl text-base font-bold text-white disabled:opacity-50"
-                  style={{ backgroundColor: 'var(--card-pink)' }}
+                  style={{ backgroundColor: '#FF3471' }}
                 >
                   {loading ? 'Syncing Plan...' : 'Sync Plan'}
                 </button>
@@ -257,14 +257,14 @@ export default function Home() {
               {/* Project specs */}
               <article
                 className="p-6 rounded-2xl border"
-                style={{ backgroundColor: 'var(--soft-pink-accent)', borderColor: 'rgba(255, 255, 255, 0.05)', color: 'var(--text-light-pink)' }}
+                style={{ backgroundColor: 'var(--soft-pink-accent)', borderColor: 'rgba(129, 191, 183, 0.65)', color: 'var(--text-light-pink)' }}
               >
                 <h3 className="text-sm font-bold uppercase tracking-wider mb-4" style={{ color: 'var(--text-light-pink)' }}>
                   Project Specs
                 </h3>
                 <div className="space-y-2 text-base">
                   {Object.entries(est.details).slice(0, 6).map(([key, value]) => (
-                    <div key={key} className="flex justify-between border-b border-white/5 py-2">
+                    <div key={key} className="flex justify-between border-b border-[#81BFB7]/45 py-2">
                       <span>{formatLabel(key)}</span>
                       <strong style={{ color: 'var(--text-light-pink)' }}>{String(value)}</strong>
                     </div>
@@ -275,7 +275,7 @@ export default function Home() {
               {/* Materials */}
               <article
                 className="p-6 rounded-2xl border"
-                style={{ backgroundColor: 'var(--soft-pink-accent)', borderColor: 'rgba(255, 255, 255, 0.05)', color: 'var(--text-light-pink)' }}
+                style={{ backgroundColor: 'var(--soft-pink-accent)', borderColor: 'rgba(129, 191, 183, 0.65)', color: 'var(--text-light-pink)' }}
               >
                 <h3 className="text-sm font-bold uppercase tracking-wider mb-4" style={{ color: 'var(--text-light-pink)' }}>
                   Materials
@@ -283,7 +283,7 @@ export default function Home() {
                 {est.materials && est.materials.length > 0 ? (
                   <div className="space-y-2 text-base">
                     {est.materials.map((m, i) => (
-                      <div key={i} className="flex justify-between border-b border-white/5 py-2">
+                      <div key={i} className="flex justify-between border-b border-[#81BFB7]/45 py-2">
                         <span>{m.name} ({m.quantity} {m.unit})</span>
                         <strong style={{ color: 'var(--text-light-pink)' }}>
                           ${m.costLow.toLocaleString()} – ${m.costHigh.toLocaleString()}
@@ -299,22 +299,22 @@ export default function Home() {
               {/* Don't forget / Pro tip */}
               <div
                 className="sm:col-span-2 -rotate-1 p-5 rounded-xl border shadow-lg"
-                style={{ backgroundColor: 'rgba(255, 193, 7, 0.1)', borderColor: 'rgba(255, 193, 7, 0.3)' }}
+                style={{ backgroundColor: 'rgba(198, 230, 227, 0.6)', borderColor: 'rgba(129, 191, 183, 0.8)' }}
               >
                 {/\bdoor(s)?\b/i.test(input) ? (
                   <>
-                    <h3 className="font-bold mb-2 text-base text-amber-200">Pro tip</h3>
-                    <p className="text-base text-amber-100/90">
+                    <h3 className="font-bold mb-2 text-base" style={{ color: 'var(--card-pink)' }}>Pro tip</h3>
+                    <p className="text-base" style={{ color: 'var(--text-light-pink)' }}>
                       To determine paint type, try rubbing a cotton ball with isopropyl (rubbing) alcohol on the door. If the paint softens or comes off, it&apos;s water-based; if nothing happens, it&apos;s likely oil-based.
                     </p>
                   </>
                 ) : (
                   <>
-                    <h3 className="font-bold mb-2 text-base text-amber-200">Don&apos;t forget!</h3>
-                    <ul className="space-y-1 text-base text-amber-100/90">
+                    <h3 className="font-bold mb-2 text-base" style={{ color: '#2f5f5a' }}>Don&apos;t forget!</h3>
+                    <ul className="space-y-1 text-base" style={{ color: '#2f5f5a' }}>
                       {(COMMONLY_FORGOTTEN_ITEMS[est.projectType?.toLowerCase() || 'painting'] ?? COMMONLY_FORGOTTEN_ITEMS.painting).map((item, i) => (
                         <li key={i} className="flex items-start gap-2">
-                          <span className="text-amber-400">•</span>
+                          <span style={{ color: '#2f5f5a' }}>•</span>
                           <span>{item}</span>
                         </li>
                       ))}

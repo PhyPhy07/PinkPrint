@@ -1,10 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { Sour_Gummy } from "next/font/google";
+import { Gloock } from "next/font/google";
 import "./globals.css";
 
-const sourGummy = Sour_Gummy({
+const gloock = Gloock({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400"],
 });
 
 export const metadata: Metadata = {
@@ -27,7 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="w-full overflow-x-hidden">
-      <body className={`${sourGummy.className} antialiased`}>
+      <body className={`${gloock.className} antialiased`}>
         {children}
       </body>
     </html>
