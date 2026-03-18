@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 
 const COMMONLY_FORGOTTEN_ITEMS: Record<string, string[]> = {
   painting: [
@@ -141,7 +142,7 @@ export default function Home() {
             style={{ borderColor: 'var(--color-maroon)' }}
           >
             <p className="text-base font-bold text-maroon sm:text-lg">
-              On Wednesdays: We Build in Pink! Let&apos;s get to planning and budgeting your next project together.
+              On Wednesdays: We Build in Pink! Let&apos;s get to planning and budgeting your next Paint, Flooring, or Fence project.
             </p>
             {/* Bubble tail pointing left towards the builder babe */}
             <div
@@ -166,8 +167,13 @@ export default function Home() {
       </div>
       <main className="w-full min-w-0 max-w-2xl px-4 pb-4 pt-[8%] sm:mx-0 sm:ml-auto sm:mr-[5%] sm:px-0 sm:pt-[8%] mx-auto">
         <form onSubmit={handleSubmit} className="space-y-3">
+          <Link
+            href="/essay"
+            className="block text-sm font-medium text-maroon hover:underline mb-2"
+          >
+            Read the essay: From Sales Floor to Structured Output →
+          </Link>
           <div>
-        
             <textarea
               id="project"
               value={input}

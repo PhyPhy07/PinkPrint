@@ -12,7 +12,9 @@
     "@ai-sdk/google": "^3.0.43",
     "@supabase/supabase-js": "^2.99.1",
     "ai": "^6.0.116",
+    "gray-matter": "^4.0.3",
     "next": "16.1.6",
+    "next-mdx-remote": "^6.0.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "zod": "^4.3.6"

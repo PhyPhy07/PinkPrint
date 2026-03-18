@@ -1,0 +1,143 @@
+---
+title: "From Sales Floor to Structured Output: Building an AI Project Planner with the Vercel AI SDK and Gemini"
+date: 2025-03-14
+description: "Building Pink Print — an AI-powered DIY project planner combining Home Depot domain expertise with Gemini and the Vercel AI SDK."
+---
+
+Somewhere between fresh-faced confidence and naivety lives a DIYer who finally gets to take on the Pinterest project of their dreams. After 15 years of busy Saturdays in the Home Depot aisles as a sales rep, I've heard the same question hundreds of times: "How much will this project cost me?" The answer was never simple – and unfortunately many customers find themselves knee-deep in humus and manure before realizing that they should have factored in renting a tiller to salvage their patience.
+
+While existing calculators can help with ballpark costs, most assume you already know what you need. So I built Pink Print — a project planner that combines the clarifying questions I learned over 15 years in the aisles with the power of Gemini to turn natural language descriptions into structured, cost-aware project plans for painting, flooring, and fencing.
+
+## Architecture: Drafting the Vision and Making Some Decisions
+
+I designed the system to favor structure and predictability over letting the AI run wild with assumptions.
+
+For simplicity, I reached for Next.js App Router — API routes and server components live in one place. The `/api/ai` route runs entirely on the server, handling direct calls to Gemini AI and a Supabase database without exposing sensitive keys. Keeping the Gemini call server-side isn't just convenient — it enforces a deliberate security boundary. The browser never sees the API key. The client sends the user's input and receives the result. Here's what happens in sequence:
+
+```ts
+// app/api/ai/route.ts — extract, estimate, merge
+const extracted = await cachedGenerateObject(
+  input,
+  'project-extraction',
+  projectExtractionSchema
+);
+const estimate = estimateProject(extracted);
+
+const { projectType, clarifyingQuestions } = extracted;
+const knownQuestions = getFilteredKnownQuestions(projectType, input);
+const aiQuestions = Array.isArray(clarifyingQuestions) ? clarifyingQuestions : [];
+const mergedQuestions = [...knownQuestions, ...aiQuestions];
+
+return NextResponse.json({
+  extracted: { ...extracted, clarifyingQuestions: mergedQuestions },
+  estimate,
+});
+```
+
+For the cost-conscious builder, Gemini's free tier is generous enough to handle the AI layer — with reliable structured-output support and clean integration via the Vercel AI SDK.
+
+Rather than parsing raw JSON and manually validating model responses, the SDK accepts my Zod schema directly and returns typed, validated output. The schema enforces exactly what the AI can return: which project type, which fields per type, allowed enums, and that numeric fields are positive with defaults. Anything unexpected or malformed is rejected before it reaches the estimator. That separation keeps the estimator simple: it always receives the shape it expects.
+
+The schema is a discriminated union — the valid fields change entirely depending on which project type the model returns:
+
+```ts
+// projectExtractionSchema — discriminated union by projectType
+const paintVariant = z.object({
+  projectType: z.literal('painting'),
+  roomLengthFt: z.number().positive().default(12),
+  roomWidthFt: z.number().positive().default(12),
+  ceilingHeightFt: z.number().positive().default(8),
+  paintCeiling: z.boolean().default(false),
+  paintMoldingOrTrim: z.boolean().default(false),
+  clarifyingQuestions: z.array(z.string()).optional(),
+});
+
+const flooringVariant = z.object({
+  projectType: z.literal('flooring'),
+  roomLengthFt: z.number().positive().default(12),
+  roomWidthFt: z.number().positive().default(12),
+  flooringType: z.enum(['hardwood', 'carpet', 'tile', 'lvp']).default('lvp'),
+  clarifyingQuestions: z.array(z.string()).optional(),
+});
+
+const fenceVariant = z.object({
+  projectType: z.literal('fence'),
+  fenceLengthFt: z.number().positive().default(20),
+  fenceHeightFt: z.number().positive().default(6),
+  fenceType: z.enum(['wood', 'metal', 'plastic']).default('wood'),
+  clarifyingQuestions: z.array(z.string()).optional(),
+});
+
+export const projectExtractionSchema = z.discriminatedUnion('projectType', [
+  paintVariant,
+  flooringVariant,
+  fenceVariant,
+]);
+```
+
+Structured output is only as good as the input that produces it. How do we account for the rookie mistake of a half-informed project estimate?
+
+To address the unknowns, I built a hybrid question system. A curated set of questions — drawn from the same mental checklist I ran with every customer — is merged with the AI's own questions and filtered by context. For input like "paint my bedroom", the filter detects an interior room and skips "Is this interior or exterior?" entirely. The AI contributes questions the checklist didn't anticipate. 
+
+The tradeoff is maintenance: two systems in sync instead of one. But AI-only question generation is lighter to maintain at the cost of domain specificity — and in home improvement, the questions you skip are the ones that blow the budget.
+
+Once the AI has extracted the project details and returned a validated response, that output is stored in Supabase with a cache key. I chose persistent storage over in-memory for one reason: cached responses need to survive restarts and deploys. The tradeoff is real — you're adding an external dependency, secrets management across environments, and operational surface area that an in-memory cache doesn't require. It's also why the debugging story later in this post exists.
+
+### Architectural Tradeoffs
+
+Every decision here points in the same direction — a system easier to reason about, audit, and trust. Single provider. Required cache. Deterministic costs over AI-generated numbers. Curated questions merged with AI output. No streaming. In home improvement, a confident wrong answer is worse than a cautious right one. The architecture reflects that.
+
+## Domain Expertise: The Bridge an LLM Can't Build Alone
+
+After years of watching customers arrive confident and leave humbled — over budget, mid-project, staring at the half-painted wall they should have primed first — I learned that a precise plan is pivotal. The most common failure wasn't effort. It was a lack of information. Frustrated and mid-project, they turn to an LLM for guidance — and receive the guiding hand of a model that never thought to ask the right questions before handing the user a confident, detailed, completely wrong estimate. An LLM is limited by what it doesn't know, and unlike a sales rep, it won't ask.
+
+Pink Print does what the LLM didn't — it asks first. A two-phase flow surfaces missing information through clarifying questions before generating an estimate, ensuring the output is built on complete context rather than assumptions. The user describes their project in plain language. If critical details are missing — dimensions, surface type, interior versus exterior — Pink Print surfaces them before a single cost is calculated.
+
+Trusting an LLM to capture the full scope of a project — even in a domain as practical as home improvement — still requires a human hand in the process. An LLM prompted to "ask clarifying questions about a painting project" will generate reasonable ones — but reasonable isn't the same as right. It might ask about color preference before asking about room dimensions. It might skip priming entirely, which can be catastrophic for anyone attempting to apply paint to fresh, unsealed drywall. So I encoded the questions myself, drawn from the same mental checklist I ran through with every customer for 15 years — and built Pink Print the way an engineer would: as structured, testable logic rather than a prompt and a prayer.
+
+The checklist became code. `KNOWN_CLARIFYING_QUESTIONS` maps a set of curated questions to each project type. `getFilteredKnownQuestions()` reads the user's input, matches it against patterns like `INTERIOR_ROOM_WORDS` and `DOOR_WORDS`, and filters the questions to fit what they actually described. The model contributes as a tool in the toolbelt rather than the lead handyman — its questions get merged with mine before the response goes back to the client.
+
+```ts
+// Curated questions per project type + context-aware filtering
+export const KNOWN_CLARIFYING_QUESTIONS: Record<string, string[]> = {
+  painting: ['Is this interior or exterior?', 'Fresh drywall or existing paint?', ...],
+  flooring: ['Stairs or elevated areas?', 'Subfloor type?', ...],
+  fence: ['Gates or obstacles?', 'Posts in concrete?', ...],
+};
+
+const INTERIOR_ROOM_WORDS = /\b(bedroom|kitchen|bathroom|...)\b/i;
+const DOOR_WORDS = /\bdoor(s)?\b/i;
+
+export function getFilteredKnownQuestions(projectType: string, userInput: string): string[] {
+  if (DOOR_WORDS.test(userInput)) return PAINTING_DOOR_QUESTIONS;
+  const isInterior = INTERIOR_ROOM_WORDS.test(userInput);
+  return (KNOWN_CLARIFYING_QUESTIONS[projectType] ?? []).filter((q) => {
+    if (isInterior && q.startsWith('Is this an interior or exterior')) return false;
+    return true;
+  });
+}
+// In API route: mergedQuestions = [...getFilteredKnownQuestions(...), ...aiQuestions]
+```
+
+- **"paint my bedroom"** → Skips "interior or exterior?" — bedroom implies interior
+- **"paint my front door"** → Switches to door-specific questions (count, material, priming, etc.)
+- **"12x14 room, existing paint"** → Skips "fresh drywall or existing?" — user already said existing
+
+## It Works on My Local: A Confession
+
+I'll be honest — this was my first time building with the Vercel AI SDK, working with a schema validator like Zod, and shipping an app that puts an LLM to practical use. Most of my planning phase was a rubber ducking session — asking myself: "what if?", "I wonder how this works?", "there has to be an easier way." Less nail-biting telenovela, more Severance tension with a Ted Lasso ending.
+
+I've become a strong advocate for Vercel's ecosystem. The deployment process is genuinely easy, and the out-of-the-box tooling meant I could focus on the actual problem instead of the infrastructure around it. I'm a conscious spender when it comes to build time and bundle size — every dependency needs to earn its place. The Vercel AI SDK earned its place immediately. At its core, Pink Print needs reliable structured output, validation, and clean TypeScript types. The SDK handled all three without requiring me to wire them together myself.
+
+The Vercel AI SDK checks several boxes, but caching isn't one of them. So I turned to Supabase to handle it — storing responses against cache keys so repeated prompts wouldn't hit Gemini twice. Setting it up meant coordinating environment variables across local and deployment, which is where I handed myself my first real problem.
+
+The classic engineering phrase "but it works on my local" stopped being funny the moment it was on my deployment. I'd tested several painting prompts locally — they worked perfectly. When I shifted to the Vercel deployment link and tried flooring prompts, I hit failures at every single one. After abusing my rubber duck with colorful language, the culprit revealed itself: I'd forgotten to add the Gemini API key to Vercel's environment variables. The cached responses from local testing had masked the missing key entirely — paint prompts were cached, flooring prompts were new, and new prompts needed Gemini. The cache had been doing its job so well that it hid the bug until the user's needs changed.
+
+The fix took thirty seconds. The lesson took longer.
+
+## Measure Twice: Prompt Once
+
+An incredibly talented engineer recently told me to build something that showed what I learned at Home Depot. What surprised me wasn't how much I had to learn about AI — it was how much of what I already knew translated directly into better AI. Building software and building a fence have more in common than either community wants to admit. Both reward preparation. Both punish assumptions. And both grant that sense of accomplishment when they come together.
+
+That's where the checklist became the codebase. The questions, the edge cases, the things customers always forgot to mention — all of it became the *blue print* for structure. All of it became code. Pink Print isn't an AI product with domain knowledge bolted on. It's domain knowledge that happens to run on AI.
+
